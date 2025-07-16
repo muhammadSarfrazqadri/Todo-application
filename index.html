@@ -87,22 +87,22 @@
   </div>
 
   <script type="module">
-    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
       getFirestore, collection, addDoc, getDocs,
       doc, deleteDoc, updateDoc
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-    // 🛠 Replace this config with your own Firebase project config
     const firebaseConfig = {
-      apiKey: "AIzaSyBi4rhvW7t7kQ0eq2WgVxz727qHnOfsJ00",
-      authDomain: "saylani-admission-form-d62c8.firebaseapp.com",
-      projectId: "saylani-admission-form-d62c8",
-      storageBucket: "saylani-admission-form-d62c8.appspot.com",
-      messagingSenderId: "82909623611",
-      appId: "1:82909623611:web:9693a328ed35808061331e"
-    };
+  apiKey: "AIzaSyCUu02OHJE_tuqgjPmZACwcnpyKcYfbO5o",
+  authDomain: "todo-application-2d23a.firebaseapp.com",
+  projectId: "todo-application-2d23a",
+  storageBucket: "todo-application-2d23a.firebasestorage.app",
+  messagingSenderId: "505217659367",
+  appId: "1:505217659367:web:980bdcb86c006e0552cd42",
+  measurementId: "G-YS4J1DDH6C"
+};
+
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -110,8 +110,6 @@
 
     const todoInput = document.getElementById("todoInput");
     const todoList = document.getElementById("todoList");
-
-    // Load all todos from Firebase
     async function loadTodos() {
       todoList.innerHTML = "";
       const querySnapshot = await getDocs(todoRef);
