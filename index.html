@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ToDo App with Firebase</title>
+  <title>Firebase ToDo App</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -79,7 +79,7 @@
 <body>
 
   <div class="container">
-    <h2>🔥 ToDo App (with Firebase)</h2>
+    <h2>🔥 ToDo App (Firebase)</h2>
     <input type="text" id="todoInput" placeholder="Enter your task..." />
     <button onclick="addTodo()">Add</button>
 
@@ -87,22 +87,23 @@
   </div>
 
   <script type="module">
+    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
       getFirestore, collection, addDoc, getDocs,
       doc, deleteDoc, updateDoc
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
+    // ✅ Your Firebase config
     const firebaseConfig = {
-  apiKey: "AIzaSyCUu02OHJE_tuqgjPmZACwcnpyKcYfbO5o",
-  authDomain: "todo-application-2d23a.firebaseapp.com",
-  projectId: "todo-application-2d23a",
-  storageBucket: "todo-application-2d23a.firebasestorage.app",
-  messagingSenderId: "505217659367",
-  appId: "1:505217659367:web:980bdcb86c006e0552cd42",
-  measurementId: "G-YS4J1DDH6C"
-};
-
+      apiKey: "AIzaSyCUu02OHJE_tuqgjPmZACwcnpyKcYfbO5o",
+      authDomain: "todo-application-2d23a.firebaseapp.com",
+      projectId: "todo-application-2d23a",
+      storageBucket: "todo-application-2d23a.firebasestorage.app",
+      messagingSenderId: "505217659367",
+      appId: "1:505217659367:web:980bdcb86c006e0552cd42",
+      measurementId: "G-YS4J1DDH6C"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -110,6 +111,8 @@
 
     const todoInput = document.getElementById("todoInput");
     const todoList = document.getElementById("todoList");
+
+    // Load all todos from Firebase
     async function loadTodos() {
       todoList.innerHTML = "";
       const querySnapshot = await getDocs(todoRef);
