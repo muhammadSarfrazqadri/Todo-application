@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ToDo App with Firebase</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      color: #006e6d;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 70%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 10px 15px;
+      margin-left: 5px;
+      background-color: #006e6d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #004c4b;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
+
+    li {
+      background: #f8f8f8;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actions button {
+      margin-left: 5px;
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    .actions input {
+      padding: 5px;
+      width: 60%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>🔥 ToDo App (with Firebase)</h2>
+    <input type="text" id="todoInput" placeholder="Enter your task..." />
+    <button onclick="addTodo()">Add</button>
+
+    <ul id="todoList"></ul>
+  </div>
+
+  <script type="module">
+    // Firebase imports
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, getDocs,
+      doc, deleteDoc, updateDoc
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    // 🛠 Replace this config with your own Firebase project config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBi4rhvW7t7kQ0eq2WgVxz727qHnOfsJ00",
+      authDomain: "saylani-admission-form-d62c8.firebaseapp.com",
+      projectId: "saylani-admission-form-d62c8",
+      storageBucket: "saylani-admission-form-d62c8.appspot.com",
+      messagingSenderId: "82909623611",
+      appId: "1:82909623611:web:9693a328ed35808061331e"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const todoRef = collection(db, "todos");
+
+    const todoInput = document.getElementById("todoInput");
+    const todoList = document.getElementById("todoList");
+
+    // Load all todos from Firebase
+    async function loadTodos() {
+      todoList.innerHTML = "";
+      const querySnapshot = await getDocs(todoRef);
+      querySnapshot.forEach((docItem) => {
+        const data = docItem.data();
+        createTodoItem(docItem.id, data.task);
+      });
+    }
+
+    // Create a todo item in the list
+    function createTodoItem(id, task) {
+      const li = document.createElement("li");
+      li.setAttribute("data-id", id);
+
+      const taskText = document.createElement("span");
+      taskText.textContent = task;
+
+      const actions = document.createElement("div");
+      actions.className = "actions";
+
+      const editInput = document.createElement("input");
+      editInput.type = "text";
+      editInput.value = task;
+
+      const updateBtn = document.createElement("button");
+      updateBtn.textContent = "Update";
+      updateBtn.onclick = async () => {
+        const newVal = editInput.value;
+        await updateDoc(doc(db, "todos", id), { task: newVal });
+        loadTodos();
+      };
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.textContent = "Delete";
+      deleteBtn.onclick = async () => {
+        await deleteDoc(doc(db, "todos", id));
+        loadTodos();
+      };
+
+      actions.appendChild(editInput);
+      actions.appendChild(updateBtn);
+      actions.appendChild(deleteBtn);
+
+      li.appendChild(taskText);
+      li.appendChild(actions);
+      todoList.appendChild(li);
+    }
+
+    // Add a new todo
+    async function addTodo() {
+      const task = todoInput.value.trim();
+      if (task === "") return;
+
+      await addDoc(todoRef, { task });
+      todoInput.value = "";
+      loadTodos();
+    }
+
+    // Enter key press to add
+    todoInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        addTodo();
+      }
+    });
+
+    // Initial load
+    loadTodos();
+  </script>
+
+</body>
+</html>
